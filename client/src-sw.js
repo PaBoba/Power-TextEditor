@@ -1,4 +1,7 @@
 const { offlineFallback, warmStrategyCache } = require("workbox-recipes");
+importScripts(
+  "https://storage.googleapis.com/workbox-cdn/releases/6.3.0/workbox-sw.js"
+);
 const { CacheFirst } = require("workbox-strategies");
 const { registerRoute } = require("workbox-routing");
 const { CacheableResponsePlugin } = require("workbox-cacheable-response");
@@ -27,9 +30,9 @@ warmStrategyCache({
 registerRoute(({ request }) => request.mode === "navigate", pageCache);
 
 // TODO: Implement asset caching
-registerRoute(
+workbox.routing.registerRoute(
   ({ request }) => ["style", "script", "worker"].includes(request.destination),
-  new StaleWhileRevalidate({
+  new workbox.strategies.StaleWhileRevalidate({
     cacheName: "asset-cache",
     plugins: [
       new CacheableResponsePlugin({
